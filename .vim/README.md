@@ -1,52 +1,34 @@
-# Introduction
+indentLine
+==========
 
-EasyMotion provides a much simpler way to use some motions in vim. It
-takes the `<number>` out of `<number>w` or `<number>f{char}` by
-highlighting all possible choices and allowing you to press one key to
-jump directly to the target.
+This plugin is used for displaying thin vertical lines at each indentation level for code indented with spaces. For code indented with tabs I think there is no need to support it, because you can use `:set list lcs=tab:\|\ ` (here is a space).
 
-When one of the available motions is triggered, all visible text
-preceding or following the cursor is faded, and motion targets are
-highlighted.
+## Requirements
+This plugin takes advantage of the newly provided `conceal` feature in Vim 7.3, so this plugin will not work with lower versions of Vim.
 
-EasyMotion is triggered by one of the provided mappings.
+## Installation
+To install the plugin just put the plugin files in your `~/.vim` (Linux) or `~/vimfiles` (Windows).
 
-# Important notes about the default bindings
+If you use a plugin manager you can put the whole directory into your `~/.vim/bundle/` directory ([Pathogen][pathogen]) or add the line `Bundle 'Yggdroot/indentLine'` to your `.vimrc` ([Vundle][vundle]).
 
-**The default leader has been changed to `<Leader><Leader>` to avoid 
-conflicts with other plugins you may have installed.** This can easily be 
-changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
+## Customization
+You can change the color of indentLines:  
+for Vim, set `g:indentLine_color_term` in your `.vimrc`, e.g. `let g:indentLine_color_term = 239`,  
+for GVim, set `g:indentLine_color_gui` in your `.vimrc`, e.g. `let g:indentLine_color_gui = '#A4E57E'`  
+for none X terminal, set `g:indentLine_color_tty_light` and `g:indentLine_color_tty_dark` in your `.vimrc`. e.g. `let g:indentLine_color_tty_light = 7`(default: 4), `let g:indentLine_color_dark = 1`(default: 2).
 
-	let g:EasyMotion_leader_key = '<Leader>'
+You can also change the indentLine char:  
+for both Vim and GVim, set `let g:indentLine_char = 'c'` where `'c'` can be any ASCII character. You can also use one of `¦`, `┆` or `│` to display more beautiful lines. However, these characters will only work with files whose encoding is UTF-8.
 
-All motions are now triggered with `<Leader><Leader>` by default, e.g.
-`<Leader><Leader>t`, `<Leader><Leader>gE`.
+## Self promotion
+If you think this script is helpful, follow the [GitHub repository][repository], and don't forget to vote for it on Vim.org! ([vimscript #4354][script]).
 
-## Usage example
+[pathogen]: https://github.com/tpope/vim-pathogen
+[vundle]: https://github.com/gmarik/vundle
+[repository]: https://github.com/Yggdroot/indentLine
+[script]: http://www.vim.org/scripts/script.php?script_id=4354
 
-Type `<Leader><Leader>w` to trigger the word motion `w`. When the motion is
-triggered, the text is updated (no braces are actually added, the text
-is highlighted in red by default):
 
-	<cursor>Lorem {a}psum {b}olor {c}it {d}met.
+## Screenshots
+![Screenshot](http://i.imgur.com/KVi0T.jpg)
 
-Press `c` to jump to the beginning of the word "sit":
-
-	Lorem ipsum dolor <cursor>sit amet.
-
-Similarly, if you're looking for an "o", you can use the `f` motion.
-Type `<Leader><Leader>fo`, and all "o" characters are highlighted:
-
-	<cursor>L{a}rem ipsum d{b}l{c}r sit amet.
-
-Press `b` to jump to the second "o":
-
-	Lorem ipsum d<cursor>olor sit amet.
-
-Jeffrey Way of Nettuts+ has also [written
-a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
-about EasyMotion.
-
-## Animated demonstration
-
-![Animated demonstration](http://oi54.tinypic.com/2yysefm.jpg)

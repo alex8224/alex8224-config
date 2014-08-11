@@ -1,10 +1,5 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =8
-let g:netrw_dirhist_1='/home/alex/project/mycloud/mycloudinstance'
-let g:netrw_dirhist_2='/etc/privoxy'
-let g:netrw_dirhist_3='/tmp/play!/play-2.0.2/samples/scala/comet-clock'
-let g:netrw_dirhist_4='/etc/redis'
-let g:netrw_dirhist_5='/Users/apple/Downloads/Hovertruck-sublime-pyflakes-88c0c6f'
-let g:netrw_dirhist_6='/usr/share/awesome/themes/default/titlebar'
-let g:netrw_dirhist_7='/home/alex/storage/project/webqq-cli/src'
-let g:netrw_dirhist_8='/usr/local/lib/python2.7/dist-packages/gevent-1.0dev-py2.7-linux-i686.egg'
+let g:netrw_dirhist_cnt =3
+let g:netrw_dirhist_1='/tmp/build/icms_vm_mrtg/backup'
+let g:netrw_dirhist_2='/home/alex/nginx_rtmp/conf'
+let g:netrw_dirhist_3='/home/alex/storage/appdata/alex8224-config/.vim/vim-airline'

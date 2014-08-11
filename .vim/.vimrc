@@ -25,7 +25,7 @@ filetype plugin indent on
 set fdm=marker
 set noswapfile
 set nobackup
-set encoding=utf-8
+Set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,latin1
 set helplang=cn

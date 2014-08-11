@@ -1,82 +1,139 @@
-pyflakes-vim
+#################################################
+jedi-vim - awesome Python autocompletion with VIM
+#################################################
+
+**now in beta testing phase**
+
+*If you have any comments or feature requests, please tell me! I really want to
+know, what you think about Jedi and jedi-vim.*
+
+jedi-vim is a is a VIM binding to the awesome autocompletion library *Jedi*.
+
+Here are some pictures:
+
+.. image:: https://github.com/davidhalter/jedi/raw/master/docs/_screenshots/screenshot_complete.png
+
+Completion for almost anything (Ctrl+Space).
+
+.. image:: https://github.com/davidhalter/jedi/raw/master/docs/_screenshots/screenshot_function.png
+
+Display of function/class bodies, docstrings.
+
+.. image:: https://github.com/davidhalter/jedi/raw/master/docs/_screenshots/screenshot_pydoc.png
+
+Pydoc support (with highlighting, Shift+k).
+
+There is also support for goto and renaming.
+
+
+Get the latest from `github <http://github.com/davidhalter/jedi-vim>`_.
+
+You can get the Jedi library is documented
+`here <http://github.com/davidhalter/jedi>`_.
+
+
+Support
+=======
+
+The Jedi library supports most of Python's core features. From decorators to
+generators, there is broad support.
+
+
+Installation
 ============
 
-A Vim plugin for checking Python code on the fly.
+You might want to use `pathogen <https://github.com/tpope/vim-pathogen>`_ to
+install jedi in VIM. Also you need a VIM version that was compiled with
+``+python``, which is typical for most distributions on Linux.
 
-PyFlakes catches common Python errors like mistyping a variable name or
-accessing a local before it is bound, and also gives warnings for things like
-unused imports.
+The first thing you need after that is an up-to-date version of Jedi. You can
+either get it via ``pip install jedi`` or with ``git submodule update --init``
+in your jedi-vim repository.
 
-pyflakes-vim uses the output from PyFlakes to highlight errors in your code.
-To locate errors quickly, use quickfix_ commands like :cc.
+The autocompletion can be used with <ctrl+space>, if you want it to work with
+<tab> you can use `supertab <https://github.com/ervandew/supertab>`_.
 
-Make sure to check vim.org_ for the latest updates.
+On Arch Linux, you can also install jedi-vim from AUR: `vim-jedi
+<https://aur.archlinux.org/packages/vim-jedi/>`__.
 
-.. _pyflakes.vim: http://www.vim.org/scripts/script.php?script_id=2441
-.. _vim.org: http://www.vim.org/scripts/script.php?script_id=2441
-.. _quickfix: http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
-
-Quick Installation
-------------------
-
-1. Make sure your ``.vimrc`` has::
- 
-    filetype on            " enables filetype detection
-    filetype plugin on     " enables filetype specific plugins
-
-2. Download the latest release_.
-
-3. If you're using pathogen_, unzip the contents of ``pyflakes-vim.zip`` into
-   its own bundle directory, i.e. into ``~/.vim/bundle/pyflakes-vim/``.
-
-   Otherwise unzip ``pyflakes.vim`` and the ``pyflakes`` directory into
-   ``~/.vim/ftplugin/python`` (or somewhere similar on your
-   `runtime path`_ that will be sourced for Python files).
-
-.. _release: http://www.vim.org/scripts/script.php?script_id=2441
-.. _pathogen: http://www.vim.org/scripts/script.php?script_id=2332
-.. _runtime path: http://vimdoc.sourceforge.net/htmldoc/options.html#'runtimepath' 
-
-Running from source
--------------------
-
-If you're running pyflakes-vim "from source," you'll need the PyFlakes library
-on your PYTHONPATH somewhere.  (It is included in the vim.org zipfile.) I recommend
-getting my PyFlakes_ fork, which retains column number information, giving more
-specific error locations.
-
-.. _vim.org: http://www.vim.org/scripts/script.php?script_id=2441
-.. _PyFlakes: http://github.com/kevinw/pyflakes
-
-Hacking
--------
-
-::
-
-  git clone git://github.com/kevinw/pyflakes-vim.git
-  cd pyflakes-vim
-  git clone git://github.com/kevinw/pyflakes.git
 
 Options
--------
+=======
 
-Set this option to you vimrc file to disable quickfix support::
-    
-    let g:pyflakes_use_quickfix = 0
+Jedi is by default automatically initialized. If you don't want that I suggest
+you disable the auto-initialization in your ``.vimrc``:
 
-The value is set to 1 by default.
+.. code-block:: vim
 
-TODO
-----
- * signs_ support (show warning and error icons to left of the buffer area)
- * configuration variables
- * parse or intercept useful output from the warnings module
+    let g:jedi#auto_initialization = 0
 
-.. _signs: http://www.vim.org/htmldoc/sign.html
+There are also some VIM options (like ``completeopt``) which are automatically
+initialized, if you don't want that:
 
-Changelog
----------
+.. code-block:: vim
 
-Please see http://www.vim.org/scripts/script.php?script_id=2441 for a history of
-all changes.
+    let g:jedi#auto_vim_configuration = 0
 
+The goto is by default on <leader g>. If you want to change that:
+
+.. code-block:: vim
+
+    let g:jedi#goto_command = "<leader>g"
+
+``get_definition`` is by default on <leader d>. If you want to change that:
+
+.. code-block:: vim
+
+    let g:jedi#get_definition_command = "<leader>d"
+
+Showing the pydoc is by default on ``K`` If you want to change that:
+
+.. code-block:: vim
+
+    let g:jedi#pydoc = "K"
+
+If you are a person who likes to use VIM-buffers not tabs, you might want to
+put that in your ``.vimrc``:
+
+.. code-block:: vim
+
+    let g:jedi#use_tabs_not_buffers = 0
+
+Jedi automatically starts the completion, if you type a dot, e.g. ``str.``, if
+you don't want this:
+
+.. code-block:: vim
+
+    let g:jedi#popup_on_dot = 0
+
+Jedi selects the first line of the completion menu: for a better typing-flow and
+usually saves one keypress.
+
+.. code-block:: vim
+
+    let g:jedi#popup_select_first = 0
+
+There's some support for refactoring:
+
+.. code-block:: vim
+
+    let g:jedi#rename_command = "<leader>r"
+
+And you can list all names that are related (have the same origin):
+
+.. code-block:: vim
+
+    let g:jedi#related_names_command = "<leader>n"
+
+If you want to change the default autocompletion command:
+
+.. code-block:: vim
+
+    let g:jedi#autocompletion_command = "<C-Space>"
+
+By default you get a window that displays the function definition you're
+currently in. If you don't want that:
+
+.. code-block:: vim
+
+    let g:jedi#show_function_definition = "0"
