@@ -1,5 +1,8 @@
 
-set nocompatible
+set nocompatible                " be iMproved
+
+filetype plugin indent on
+
 let &completeopt="menuone"
 
 set diffexpr=MyDiff()
@@ -13,6 +16,7 @@ set nohls
 colo molokai
 " set fdm=syntax
 " set tab stop width
+let &t_Co=256
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -25,21 +29,18 @@ filetype plugin indent on
 set fdm=marker
 set noswapfile
 set nobackup
-Set encoding=utf-8
+set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,cp936,latin1
 set helplang=cn
-" set t_Co=256
 
 set sw=4
 set tabstop=4
 let g:pylint_onwrite = 0
 " set list
 " set listchars=tab:..
-
+"
 set cscopequickfix=s-,c-,d-,i-,t-,e-
-
-let g:Powerline_symbols = 'fancy'
 
 " if has("gui_win32")
 	set gfn=文泉驿等宽微米黑
@@ -49,7 +50,8 @@ let g:Powerline_symbols = 'fancy'
 
 " map <silent> <F5> :TlistToggle<cr> 
 map <silent> <F6> :call ToggleEncoding()<cr>
-map <silent> <F7> :make<cr> <F6>
+" map <silent> <F7> :make<cr> <F6>
+map <silent> <F7> :call PythonThis()<cr>
 map <silent> <F4> :NERDTreeToggle<cr>
 map <silent> <F3> :NERDTree<cr>
 map <silent> tz :call ToggleMaxWin()<cr>
@@ -64,7 +66,9 @@ map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 nmap <silent> <F5> :TagbarToggle<CR>
 nmap <silent> <F6> :shell<CR>
 nmap <silent> <C-s> :w<cr>
-inoremap <silent> <C-s> <Esc>:w<cr>li
+nmap <silent> <C-P> :call CopyToSystem()<cr>
+nmap <S-V> :call PasteFormSystem()<cr>
+inoremap <silent> <C-s> <Esc>:w<cr>
 map <silent> m :q<cr>
 
 inoremap <C-A> <Esc>^i
@@ -98,7 +102,7 @@ inoremap <C-D>e <Esc>lc$
 inoremap <C-D>a <Esc>lc^
 
 
-let g:tagbar_ctags_bin="/home/alex/bin/bin/ctags"
+let g:tagbar_ctags_bin="/usr/bin/ctags"
 let g:tagbar_width=38
 
 " map <silent> <c-m> :call libcall("tune","maxVIM","")<cr>
@@ -130,6 +134,7 @@ let g:use_zen_complete_tag = 1
 
 "setting session file fullpath
 let g:sessionName=$VIMRUNTIME."\\session"
+let g:indentLine_color_term = 239
 
 autocmd FileType python compiler pylint
 
@@ -137,6 +142,10 @@ autocmd FileType python compiler pylint
 let g:pylint_show_rate = 0
 let g:pylint_onwrite = 0
 let g:pylint_cwindow = 0
+
+"golang settings
+"
+let g:go_fmt_autofmt = 0
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
@@ -146,9 +155,9 @@ autocmd BufNewFile,BufRead *.rst map <silent> <F7> :CmdShell sphinx-build c:\sou
 autocmd BufRead *.class call Jad()
 autocmd! BufRead  build.xml compiler ant
 autocmd! BufRead  *.java compiler ant
-autocmd! BufWritePost * call TestHandler()
-" autocmd! VimEnter * call Onload()
-" autocmd! BufRead,BufWrite * call OnUnload()
+            autocmd! BufWritePost * call TestHandler()
+autocmd! VimEnter * call Onload()
+autocmd! BufRead,BufWrite * call OnUnload()
 " autocmd BufWritePost *.js call Tossh()
 " autocmd BufWritePost *.htm call Tossh()
 " autocmd BufWritePost *.css call Tossh()
@@ -156,6 +165,12 @@ autocmd! BufWritePost * call TestHandler()
 " autocmd VimLeave * call AfterVimLeave()
 " autocmd BufWinEnter  * execute "normal \<a-z>"
  " autocmd FileType python compiler pylint
+
+function! PythonThis()
+    let s:pythonfile="python ".expand("%f")
+    call ExecuteCmd(s:pythonfile)
+endfunction
+
 
 function! TestHandler()
     call FileWritePostHandler()
@@ -171,6 +186,10 @@ function! ToggleEncoding()
 endfunction
 
 function! Onload()
+    if expand("%f")!="" && !filereadable(expand("%f"))
+        return
+    endif
+
     let s:filecontent=readfile("/home/alex/.vim/session")
     let s:currworkdir=s:filecontent[0]
     let s:currfile=s:filecontent[1]
@@ -215,3 +234,36 @@ function! MyDiff()
 	silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
 endfunction
 
+function! CopyToSystem()
+let g:clip_content = getreg()
+python << EOF
+content = vim.eval("g:clip_content")
+clip_file = "/tmp/vim_clip"
+with open(clip_file, "wb") as f:
+     f.write(content)
+import os
+cmd = "/usr/bin/xclip %s" % clip_file
+cmd_to_clipboard = "/usr/bin/xclip %s -selection clipboard" % clip_file
+os.system(cmd)
+os.system(cmd_to_clipboard)
+print("Copy Reg Content to System Clipboard Ok!") 
+EOF
+endfunc
+
+
+function! PasteFormSystem()
+python << EOF
+import vim
+from subprocess import Popen, PIPE
+xclip = Popen(["/usr/bin/xclip", "-selection", "clipboard", "-out"], stdout=PIPE)
+xclip.wait()
+stdout = xclip.stdout.read()
+vim_clip = "/tmp/vim_clip"
+with open(vim_clip, "wb") as f:
+    f.write(stdout)
+vim.command("i")
+vim.command("set paste")
+vim.command("read %s" % vim_clip)
+vim.command("set nopaste")
+EOF
+endfunction
